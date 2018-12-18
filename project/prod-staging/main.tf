@@ -51,6 +51,12 @@ output "Secured_RDS_Security_Group_Id" {
 /**************** LOAD BALANCER **********/
 
 module "Secured_Public_ALB" {
-  source                 = "../modules/alb/public"
-  vpc_id                 = "${var.vpc_id}"
+  source                          = "../modules/alb"
+  vpc_id                          = "${var.vpc_id}"
+  load_balancer_name              = "${var.public_load_balancer_name}-${var.environment}"
+  load_balancer_name_tag          = "${var.public_load_balancer_name}-${var.environment}"
+  access_log_bucket_name          = "${var.public_load_balancer_name}-${var.environment}"
+  access_log_prefix               = "${var.public_load_balancer_name}-${var.environment}"
+  load_balancer_security_group_id = "${module.Secured_Webapp_Security_Group.security_group_id}"
+  vpc_subnetIds                   = ["${data.aws_subnet.all_public_subnets.*.id}"]
 }
