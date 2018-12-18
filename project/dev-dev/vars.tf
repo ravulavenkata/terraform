@@ -14,3 +14,7 @@ variable "ec2_instance_type"             {   default="t1.micro"     }
 variable "secured_web_app_security_group_name"   {   default = "WebApp-Secured"     }
 
 variable "secured_api_app_security_group_name"   {   default = "APIApp-Secured"     }
+
+variable "secured_elasticache_security_group_name"   {   default = "ElastiCache-Secured"     }
+
+variable "secured_rds_security_group_name"   {   default = "RDS-Secured"     }
