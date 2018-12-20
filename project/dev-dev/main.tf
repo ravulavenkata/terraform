@@ -14,10 +14,63 @@ module "Parent_Domain_Register_Com" {
 */
 output "aws_route53_parent_domain_zone_id" {
   description = "Display all private subnet Ids"
+
   //value = "${module.Parent_Domain_Register_Com.aws_route53_parent_domain_zone_id}"
-  value="Z3SRMW8N8CE0MA"
+  value = "Z3SRMW8N8CE0MA"
 }
 
+/**************** ACM **********/
+
+module "Domain_Register_Com" {
+  source      = "../modules/acm"
+  domain_name = "${var.domain_name}"
+
+  //route53_zone_id ="${module.Parent_Domain_Register_Com.aws_route53_parent_domain_zone_id}"
+  route53_zone_id                                 = "Z3SRMW8N8CE0MA"
+  domain_validation_options_resource_record_name  = "${module.Domain_Register_Com.aws_cetificate_domain_validation_options_resource_record_name}"
+  domain_validation_options_resource_record_type  = "${module.Domain_Register_Com.aws_cetificate_domain_validation_options_resource_record_type}"
+  domain_validation_options_resource_record_value = "${module.Domain_Register_Com.aws_cetificate_domain_validation_options_resource_record_value}"
+  certificate_arn                                 = "${module.Domain_Register_Com.aws_cetificate_arn_id}"
+  load_balancer_dns_name                               = "${module.Secured_Public_ALB.aws_lb_dns_name}"  
+  load_balancer_zone_id= "${module.Secured_Public_ALB.aws_lb_zone_id}" 
+
+}
+
+output "Com_Domain_Certificate" {
+  value = "${module.Domain_Register_Com.aws_cetificate_arn_id}"
+}
+
+output "aws_cetificate_domain_validation_options" {
+  description = "The Domain Validation options for the certificate"
+  value       = "${module.Domain_Register_Com.aws_cetificate_domain_validation_options}"
+}
+
+output "aws_cetificate_domain_validation_options_domain_name" {
+  description = "The ARN ID of the certificate"
+  value       = "${module.Domain_Register_Com.aws_cetificate_domain_validation_options_domain_name}"
+}
+
+output "aws_cetificate_domain_validation_options_resource_record_name" {
+  description = "The ARN ID of the certificate"
+  value       = "${module.Domain_Register_Com.aws_cetificate_domain_validation_options_resource_record_name}"
+}
+
+output "aws_cetificate_domain_validation_options_resource_record_type" {
+  description = "The ARN ID of the certificate"
+  value       = "${module.Domain_Register_Com.aws_cetificate_domain_validation_options_resource_record_type}"
+}
+
+output "aws_cetificate_domain_validation_options_resource_record_value" {
+  description = "The ARN ID of the certificate"
+  value       = "${module.Domain_Register_Com.aws_cetificate_domain_validation_options_resource_record_value}"
+}
+
+/*
+output "aws_certificate_fqdn" {
+  description = "The FQDN of the certificate"
+  value = "${module.Domain_Register_Com.aws_certificate_fqdn}"  
+}
+*/
 
 /**************** SECURITY GROUPS **********/
 
@@ -86,20 +139,29 @@ output "Public_ALB_ARN_Id" {
   value = "${module.Secured_Public_ALB.aws_lb_arn_id}"
 }
 
+output "aws_lb_dns_name" {
+  description = "The DNS Name of the load balancer group"
+  value       = "${module.Secured_Public_ALB.aws_lb_dns_name}"  
+}
+
+output "aws_lb_zone_id" {
+  description = "The Zone Id of the load balancer group"
+  value       = "${module.Secured_Public_ALB.aws_lb_zone_id}"  
+}
 /**************** LOAD BALANCER LISTENER **********/
-/*
+
 module "Secured_Public_ALB_Listener" {
   source                    = "../modules/alb_listener"
-  load_balancer_arn         = "${data.aws_vpc.custom_vpc.id}"
-  listener_port             = "${var.public_load_balancer_name}-${var.environment}"
-  listener_target_group_arn = "${var.public_load_balancer_name}-${var.environment}"
-  certificate_arn           = "${var.public_load_balancer_name}-${var.environment}"
+  load_balancer_arn         = "${module.Secured_Public_ALB.aws_lb_arn_id}"
+  listener_port             = "443"
+  listener_target_group_arn = "${module.Secured_Target_Group.target_group_arn_id}"
+  certificate_arn           = "${module.Domain_Register_Com.aws_cetificate_arn_id}"
 }
 
 output "Secured_Public_ALB_Listener_ARN_Id" {
   value = "${module.Secured_Public_ALB_Listener.aws_lb_listerner_arn_id}"
 }
-*/
+
 /**************** TARGET GROUP **********/
 
 module "Secured_Target_Group" {
@@ -112,51 +174,3 @@ module "Secured_Target_Group" {
 output "Secured_Target_Group_ARN_Id" {
   value = "${module.Secured_Target_Group.target_group_arn_id}"
 }
-
-/**************** ACM **********/
-
-module "Domain_Register_Com" {
-  source      = "../modules/acm"
-  domain_name = "${var.domain_name}"
-  //route53_zone_id ="${module.Parent_Domain_Register_Com.aws_route53_parent_domain_zone_id}"
-  route53_zone_id="Z3SRMW8N8CE0MA"
-  domain_validation_options_resource_record_name="${module.Domain_Register_Com.aws_cetificate_domain_validation_options_resource_record_name}"
-  domain_validation_options_resource_record_type="${module.Domain_Register_Com.aws_cetificate_domain_validation_options_resource_record_type}" 
-  domain_validation_options_resource_record_value="${module.Secured_Public_ALB.aws_lb_arn_id}"
-  certificate_arn="${module.Domain_Register_Com.aws_cetificate_arn_id}"  
-}
-
-output "Com_Domain_Certificate" {
-  value = "${module.Domain_Register_Com.aws_cetificate_arn_id}"
-}
-
-output "aws_cetificate_domain_validation_options" {
-  description = "The Domain Validation options for the certificate"
-  value       = "${module.Domain_Register_Com.aws_cetificate_domain_validation_options}"  
-}
-
-output "aws_cetificate_domain_validation_options_domain_name" {  
-  description = "The ARN ID of the certificate"
-  value       = "${module.Domain_Register_Com.aws_cetificate_domain_validation_options_domain_name}"    
-}
-
-output "aws_cetificate_domain_validation_options_resource_record_name" {  
-  description = "The ARN ID of the certificate"
-  value       = "${module.Domain_Register_Com.aws_cetificate_domain_validation_options_resource_record_name}"    
-}
-
-output "aws_cetificate_domain_validation_options_resource_record_type" {  
-  description = "The ARN ID of the certificate"
-  value       = "${module.Domain_Register_Com.aws_cetificate_domain_validation_options_resource_record_type}"    
-}
-
-output "aws_cetificate_domain_validation_options_resource_record_value" {  
-  description = "The ARN ID of the certificate"
-  value       = "${module.Domain_Register_Com.aws_cetificate_domain_validation_options_resource_record_value}"    
-}
-/*
-output "aws_certificate_fqdn" {
-  description = "The FQDN of the certificate"
-  value = "${module.Domain_Register_Com.aws_certificate_fqdn}"  
-}
-*/

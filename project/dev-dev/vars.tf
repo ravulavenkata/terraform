@@ -1,21 +1,17 @@
 //Constants related to this environment aka DEVELOPMENT 
 
-
 //GLOBAL
 variable "parent_domain_name" {
   default = "myinsiteapp.com"
 }
 
 variable "parent_domain_nameserver" {
-  default=[ "ns-1526.awsdns-62.org",
-            "ns-842.awsdns-41.net",
-            "ns-1897.awsdns-45.co.uk",
-            "ns-82.awsdns-10.com"
-          ]
-} 
-
-
-
+  default = ["ns-1526.awsdns-62.org",
+    "ns-842.awsdns-41.net",
+    "ns-1897.awsdns-45.co.uk",
+    "ns-82.awsdns-10.com",
+  ]
+}
 
 /*************** ENVIRONMENT RELATED VARIABLES **********/
 variable "environment" {

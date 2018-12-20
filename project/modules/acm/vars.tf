@@ -23,3 +23,6 @@ variable "domain_validation_options_resource_record_type" {}
 variable "domain_validation_options_resource_record_value" {}
 
 variable "route53_zone_id" {}
+
+variable load_balancer_dns_name {}
+variable load_balancer_zone_id {}
