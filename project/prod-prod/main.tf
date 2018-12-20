@@ -52,11 +52,29 @@ output "Secured_RDS_Security_Group_Id" {
 
 module "Secured_Public_ALB" {
   source                          = "../modules/alb"
-  vpc_id                          = "${var.vpc_id}"
+  vpc_id                          = "${data.aws_vpc.custom_vpc.id}"
   load_balancer_name              = "${var.public_load_balancer_name}-${var.environment}"
   load_balancer_name_tag          = "${var.public_load_balancer_name}-${var.environment}"
   access_log_bucket_name          = "${var.public_load_balancer_name}-${var.environment}"
   access_log_prefix               = "${var.public_load_balancer_name}-${var.environment}"
   load_balancer_security_group_id = "${module.Secured_Webapp_Security_Group.security_group_id}"
   vpc_subnetIds                   = ["${data.aws_subnet.all_public_subnets.*.id}"]
+}
+
+output "Public_ALB_ARN_Id" {
+  value = "${module.Secured_Public_ALB.aws_lb_arn_id}"
+}
+
+/**************** TARGET GROUP **********/
+
+module "Secured_Target_Group" {
+  source                          = "../modules/target_group"
+  vpc_id                          = "${data.aws_vpc.custom_vpc.id}"
+  target_group_name              = "${var.target_group_name}-${var.environment}"
+  target_group_port          = "${var.target_group_port}"
+ 
+}
+
+output "Secured_Target_Group_ARN_Id" {
+  value = "${module.Secured_Target_Group.target_group_arn_id}"
 }

@@ -7,8 +7,12 @@ resource "aws_lb" "load_balancer" {
 
   enable_deletion_protection = "${var.enable_delete_protection}"
 
+lifecycle {
+  create_before_destroy= true
+}
   
   tags = {
     Environment = "${var.load_balancer_name_tag}"
+    Name = "${var.load_balancer_name}"
   }
 }

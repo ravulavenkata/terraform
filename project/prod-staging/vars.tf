@@ -114,3 +114,10 @@ variable "ec2_instance_key" {
 variable "ec2_instance_type" {
   default = "t1.micro"
 }
+
+
+/**************** TARGET GROUP **********/
+
+
+variable "target_group_name" {default = "Target-Group-Name"}
+variable "target_group_port" {default = "443"}
