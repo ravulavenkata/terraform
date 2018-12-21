@@ -142,3 +142,36 @@ variable "target_group_name" {
 variable "target_group_port" {
   default = "443"
 }
+
+/**************** LAUNCH CONFIGURATION **********/
+variable "launch_config_name" {
+  default = "UI-Launch-Config"
+}
+variable "launch_config_image_id" {
+  default = "ami-0080e4c5bc078760e"
+}
+variable "launch_config_instance_type" {
+  default = "t2.micro"
+}
+variable "launch_config_user_data" {
+  default = ""
+}
+variable "launch_config_key_name" {
+  default = ""
+}
+
+
+//ASG
+variable "auto_scale_group_name" {default = "Web-UI-ASG-Group-Name"}
+variable "asg_minimum_instances" {default = "1"}
+variable "asg_maximum_instances" {default = "1"}
+
+variable "asg_desired_capacity" {default="1"}
+variable "asg_health_check_grace_period" {  default = "300" }
+variable "asg_health_check_type" { default = "ELB" }
+variable "asg_key" {  default = "ASGKEY"}
+variable "asg_value" {  default = ""}
+variable "asg_propagate_at_launch" {  default = ""}
+variable "asg_create_before_destroy" {  default = ""}
+variable "auto_scale_policy_name" {default=""}
+
